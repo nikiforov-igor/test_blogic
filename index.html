@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+  <button id="button1">Load all employee</button>
+  <button id="button2">Load all tasks</button>
+
+  <br>
+  <h2>Employees</h2>
+  <div id="employees"></div>
+  <h2>Tasks</h2>
+  <div id="tasks"></div>
+ 
+   <script>
+    document.getElementById('button1').addEventListener('click', loadEmployees);
+    document.getElementById('button2').addEventListener('click', loadTasks);
+
+    function loadEmployees(){
+      var http = new XMLHttpRequest();
+      var output = '';
+      http.onreadystatechange=function(){
+		if(http.readyState==4&&this.status==200){
+			var employees=JSON.parse(http.response);
+      //console.log(JSON.parse(http.response));
+  
+      for(var i in employees){
+        output +='<ul>'+
+        '<li> id:'+employees[i].id+'</li>'+
+        '<li> first name:'+employees[i].firstName+'</li>'+
+        '<li> last name:'+employees[i].lastName+'</li>'+
+        '</ul>'; }
+      document.getElementById('employees').innerHTML=output;
+		}
+	}
+	http.open('GET','http://localhost:8080/employee/all');
+	http.send();	}
+
+  function loadTasks(){
+      var http = new XMLHttpRequest();
+      var output = '';
+      http.onreadystatechange=function(){
+		if(http.readyState==4&&this.status==200){
+			var tasks=JSON.parse(http.response);
+      //console.log(JSON.parse(http.response));
+  
+      for(var i in tasks){
+        output +='<ul>'+
+        '<li> id:'+tasks[i].id+'</li>'+
+        '<li> task:'+tasks[i].task+'</li>'+
+        '<li> taskAuthor:'+tasks[i].taskauthor+'</li>'+
+        '</ul>'; }
+      document.getElementById('employees').innerHTML=output;
+		}
+	}
+	http.open('GET','http://localhost:8080/tasks/all');
+	http.send();	}
+  </script> 
+	
+  <!-- <script src="asynch.js"></script> -->
+  <form>
+    First name: <br>
+    <input type="text" name="firstname" ><br>
+    Last name: <br>
+    <input type="text" name="lastname"> <br>
+    Middle name: <br>
+    <input type="text" name="middlename"> <br>
+    Post:<br>
+    <input type="text" name="post"> <br>
+    <button id="button3">Add employee</button>
+  </form>
+
+  <script>
+     document.getElementById('button3').addEventListener('click', addEmployee);
+
+     var first_name=document.querySelector('input[name=firstname]');
+     var last_name=document.querySelector('input[name=lastname]');
+     var middle_name=document.querySelector('input[name=middlename]');
+     var post=document.querySelector('input[name=post]');
+     var params='firstName'+first_name+'&'+'lastName'+last_name+'&'+'middleName'+middle_name+'&'+'post'+post;
+
+     function addEmployee(params){
+      var request = new XMLHttpRequest();
+      request.open('POST', 'http://localhost:8080/employee/add');
+      request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      request.send(params);
+
+    }
+  </script>
+</body>
+</html>
